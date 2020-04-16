@@ -40,12 +40,26 @@ class SuperPrime {
 	  } 
 	}
 	int sum() {
-	  return 0;
+        int sum;
+        for (int i = 0; i <= size; i++) {
+            sum += N[i];
+        }
+	  return sum;
 	}
 	int multi() {
+        int multi;
+        for (int i = 0; i <= size; i++) {
+            multi += N[i]*N[i];
+        }
+        return multi;
 	  return 0;
 	}
 	int squareSum() {
+        int squareSum;
+        for (int i = 0; i <= size; i++) {
+            squareSum += N[i]*N[i]*N[i];
+        }
+        return squareSum;
 	  return 0;
 	}
 };
@@ -65,11 +79,9 @@ class Set {
 	}
   	int sum() {
   	  int sum = 0;
-  	  /*
   	  for (int i = 0; i < size; i++)
   	    if(set[i].isSuperPrime())
   	      sum += set[i];
-  	      */ 
 	  return sum; 
 	}
   private:
@@ -77,10 +89,9 @@ class Set {
   	int size;
 };
 int main() {
-  SuperPrime sp(113);
-  if (sp.isSuperPrime())
-    std::cout << "113 is SuperPrime" << std::endl;
-  else
-    std::cout << "113 is NOT SuperPrime" << std::endl;
+    Set sp(100, 999);
+  SuperPrime sp(100,999);
+   std::cout << sp.count << std::endl;
+    std::cout << sp.sum << std::endl;
   return 0;
 }
