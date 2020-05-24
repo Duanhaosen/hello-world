@@ -1,3 +1,5 @@
+//作业：删除多余的集合类，使用继承方法实现相同的功能。 
+
 #include <iostream>
 
 class Prime {
@@ -12,27 +14,37 @@ public:
 
     }
 
-    bool isPrime() {
+    ~Prime() {
 
-        if (number == 0 || number == 1) return false;
+    }
 
-        for (int i = 2; i < number; i++) {
+    virtual bool isPrime() {
 
-            if (number % i == 0)    return false;
+        //2到number-1的因子
+
+        std::cout << "Prime's isPrime() call" << " " << this->number << std::endl;
+
+        int i;
+
+        for (i = 2; i < number; i++) {
+
+            if (number % i == 0)    break;
 
         }
+
+        if (i != number) return false;
 
         return true;
 
     }
 
-private:
-
     const int number;
+
+
 
 };
 
-class PrimeSet : public Prime {
+class PrimeSet {
 
 public:
 
@@ -48,11 +60,17 @@ public:
 
     }
 
+    PrimeSet(int from, int to) {
+
+        size = to - from;
+
+        set = new Prime * [size];
+
+        index = 0;
+
+    }
+
     ~PrimeSet() {
-
-        for (int i = 0; i < index; ++i)  //销毁对象
-
-            delete set[i];
 
         delete[] set;
 
@@ -74,11 +92,9 @@ public:
 
 
 
-    bool add(int n) {
+    bool add(Prime* p) {
 
         if (index == size)  return false;
-
-        Prime* p = new Prime(n);
 
         set[index] = p;
 
@@ -89,6 +105,8 @@ public:
     }
 
     bool isAllPrime() {
+
+        std::cout << "PrimeSet's isAllPrime() call" << std::endl;
 
         for (int i = 0; i < index; i++)
 
@@ -108,33 +126,37 @@ private:
 
 };
 
-
-
 class SuperPrime : public Prime {
 
 public:
 
-    SuperPrime() :number(0), pset(3) {  //为什么必须有？
+    SuperPrime() :Prime(0), pset(3) {  //为什么必须有？
 
     }
 
-    SuperPrime(int n) :number(n), pset(3) {
+    SuperPrime(int n) :Prime(n), pset(3) {
 
-        split();  //它就是构造对象
+        split();
+
+
 
     }
 
     ~SuperPrime() {
 
+        delete Sum;
+
+        delete Multi;
+
+        delete SquareSum;
+
     }
 
-    bool isSuperPrime() {
+    virtual bool isPrime() {   //类/对象的接口，更抽象说是外观
 
-        //怎么使用pset？
+        std::cout << "SuperPrime's isPrime() call" << std::endl;
 
-        Prime p(number);
-
-        if (p.isPrime() && pset.isAllPrime())
+        if (Prime::isPrime() && pset.isAllPrime())
 
             return true;
 
@@ -144,11 +166,17 @@ public:
 
 private:
 
-    const int number;
-
     PrimeSet pset;
 
+    Prime* Sum;
+
+    Prime* Multi;
+
+    Prime* SquareSum;
+
     int size_N, N[10];
+
+
 
     void split() {   //工厂方法设计模式
 
@@ -156,27 +184,31 @@ private:
 
         int temp = number;
 
-        int i, n;
+        int i;
 
         for (i = 0; temp > 0; i++) {
-            n = 0;
 
-            n = temp % 10;
+            int n = temp % 10;
 
             temp /= 10;
 
             N[i] = n;
-            //作业：单个数字为对象？还是和/积/平方和为对象？
 
         }
 
         size_N = i;
 
-        pset.add(sum());
+        Sum = new Prime(sum());
 
-        pset.add(multi());
+        Multi = new Prime(multi());
 
-        pset.add(squareSum());
+        SquareSum = new Prime(squareSum());
+
+        pset.add(Sum);
+
+        pset.add(Multi);
+
+        pset.add(SquareSum);
 
     }
 
@@ -196,7 +228,9 @@ private:
 
     int multi() {
 
-        int i, multi_num = 1;
+        int multi_num = 1;
+
+        int i;
 
         for (i = 0; i < size_N; i++) {
 
@@ -222,13 +256,21 @@ private:
 
     }
 
-
-
 };
 
-
-
 int main() {
+
+    Prime p(13);
+
+    SuperPrime sp(113);
+
+    PrimeSet set(2);
+
+    set.add(&sp);
+
+    set.add(&p);
+
+    std::cout << "How Many : " << set.count() << std::endl;
 
     return 0;
 
